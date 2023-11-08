@@ -67,11 +67,11 @@ An Excel file with multiple sheets that shows the evolution of labour dispute ov
 
 ## Work Packages
 
-1. Explore each data source [#1]
+1. Explore each data source https://github.com/OmarH97/MADE_Omar-Hussein/issues/1#issue-1983569921
 2. Integrate data
-3. Transform data
-4. Mine correlations
-5. Visualize correlations
-6. Refine steps from 2-6
-7. Make project ready for submission
+4. Transform data
+5. Mine correlations
+6. Visualize correlations
+7. Refine steps from 2-6
+8. Make project ready for submission
 
