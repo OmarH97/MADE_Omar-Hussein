@@ -67,7 +67,7 @@ An Excel file with multiple sheets that shows the evolution of labour dispute ov
 
 ## Work Packages
 
-1. Explore each data source
+1. Explore each data source [#1]
 2. Integrate data
 3. Transform data
 4. Mine correlations
