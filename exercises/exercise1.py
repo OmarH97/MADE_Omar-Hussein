@@ -9,7 +9,7 @@ print(airports_data.head())
 
 sqlite_database = create_engine('sqlite:///airports.sqlite', echo=False)
 
-airports_data.to_sql(name='airports', con=sqlite_database)
+airports_data.to_sql(name='airports', con=sqlite_database, index=False)
 
 
 
