@@ -1,18 +1,40 @@
+// The following is a Pipeline that extracts data of Train Stops from a CSV file from the web and loads it into a sqlite Datalake after enforcing some rules.
 
-pipeline TrainsData {
+pipeline TrainStopsData {
 
-    block TrainsDataExtraction oftype HttpExtractor {
+// This is the Pipeline Strucutrue which comprises three main phases: a) CSV Interpreter, b) Data Extraction & Transformation c) Writing Data to sqlite Datalake.
+
+        TrainStopsDataExtraction
+        ->TrainStopsDataInterpretationBridge
+        ->TrainsDataAsCSV
+        ->DeleteColumns
+        ->TrainStopsDataAsTable
+        ->TrainStopsDataLake;
+
+// The following is the implemenetation of the aforementioned Pipeline Strucutre.
+
+    block TrainStopsDataExtraction oftype HttpExtractor {
         url: "https://download-data.deutschebahn.com/static/datasets/haltestellen/D_Bahnhof_2020_alle.CSV";
     }
 
-    block TrainDataInterpretationBridge oftype TextFileInterpreter {}
+    block TrainStopsDataInterpretationBridge oftype TextFileInterpreter {}
 
     block TrainsDataAsCSV oftype CSVInterpreter {
         delimiter: ";";
         }
+
+// For deleting a specific column or excel in Jayvee, it is noteworthy that it cannot be done by giving the column or row header name as a string.
+// Rather by specifying kind of the column or row index as if you were in Excel. I suppose that might be the case here since we have not used the TableInterpreter yet.
+
     block DeleteColumns oftype ColumnDeleter {delete: [column J];}
 
-    block TrainsDataAsTable oftype TableInterpreter {
+// Now, we are ready to specify our desired datatypes of the columns. Yet, we have special requirements for special/customized  datatypes.
+// Therefore, custom dataypes have been defined at the bottom after the Pipeline and used below.
+// It is also noetworthy that Jayvee drops automatically any empty cell once it has a datatype assigned. Therefore, we do not need to create  a custom datatype for empty cells.
+// Yet, specifiyng data length in a cell is totally possible using the Length Constraint Function.
+// Reference: Jayvee & Studon Forum
+
+    block TrainStopsDataAsTable oftype TableInterpreter {
         header: true;
         columns: [
             "EVA_NR" oftype integer,
@@ -28,20 +50,14 @@ pipeline TrainsData {
 
     }
     
-    block TrainDataLake oftype SQLiteLoader {
+    block TrainStopsDataLake oftype SQLiteLoader {
         table: "trainstops";
         file: "./trainstops.sqlite";
     }
 
-
-    TrainsDataExtraction
-        ->TrainDataInterpretationBridge
-        ->TrainsDataAsCSV
-        ->DeleteColumns
-        ->TrainsDataAsTable
-        ->TrainDataLake;
 }
 
+// The following is a set of customized datatypes.
 
 valuetype verkehrValutype oftype text {
     constraints: [
